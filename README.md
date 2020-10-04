@@ -131,7 +131,7 @@ awk '{print "^"$0}' samples_to_remove.txt > samples_to_remove_with_symbol.txt
 bcftools view -S samples_to_remove_with_symbol.txt query_file.vcf > query_file_no_samples.vcf
 
 
-Here it is assumed query_file.vcf is a multi-sample VCF with at least two samples.
+Here it is assumed query_file.vcf is a VCF with at least one sample's genotype information.
 
 
 4. How do you convert a gzipped VCF to the `bimbam` format? (you may choose to script a solution yourself, or not)
