@@ -296,12 +296,12 @@ Allele frequencies may not be equal for a given variant due to several reasons.
 2.	Another reason could be a founder effect where due to inbreeding, a large section of the population is homozygous in genotype for a particular allele and hence one allele has a disproportionately greater allele frequency than the other.
 3.	A third possible reason could be that the variant has rose recently in the population and has not had a history long enough for it to have a frequency close enough to the major allele at that locus.
 
-awk -F'\t' '{print "chr"$0}' association.txt > association_with_chr_word.txt
-awk -F'\t' 'BEGIN{OFS="\t";} {print $0,$1"_"$3}' association _with_chr_word.txt | sort -k7 > association _chr_position_combined.txt
-awk -F'\t' 'BEGIN{OFS="\t";} {print $0,$1"_"$2}' fromVCF.txt | sort -k7 > fromVCF_chr_position_combined.txt
+         awk -F'\t' '{print "chr"$0}' association.txt > association_with_chr_word.txt
+         awk -F'\t' 'BEGIN{OFS="\t";} {print $0,$1"_"$3}' association _with_chr_word.txt | sort -k7 > association _chr_position_combined.txt
+         awk -F'\t' 'BEGIN{OFS="\t";} {print $0,$1"_"$2}' fromVCF.txt | sort -k7 > fromVCF_chr_position_combined.txt
 
 
-join -1 7 -2 7 -t $'\t' association _chr_position_combined.txt fromVCF_chr_position_combined.txt | cut -f2,3,4,7,11,10 > association_final.txt
+         join -1 7 -2 7 -t $'\t' association _chr_position_combined.txt fromVCF_chr_position_combined.txt | cut -f2,3,4,7,11,10 > association_final.txt
 
 One of the caveats of this approach is that with the VCF file reports multiple alleles for indels and thus the joined file 'association_ final.txt' has more lines than original association file
 
