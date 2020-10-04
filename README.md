@@ -25,12 +25,15 @@ Following is a sample output for two different version of R:
 /home/sdi0596/R/x86_64-pc-linux-gnu-library/4.0:
 total 54K
 drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:06 bitops
+
 drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:07 caTools
+
 drwxrwxr-x  8 sdi0596 sdi0596 4.0K Jul 31 12:10 utf8
 
 /home/sdi0596/R/x86_64-pc-linux-gnu-library/3.2:
 total 5.5K
 drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm10
+
 drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
 
 
