@@ -14,6 +14,26 @@ To submit your results, please clone this repository and make your edits. Once y
 
 ### Support/resource management/Shell
 1. A user has several versions of R installed in their path. Each version of R has a number of locally installed libraries. The user is confused, and would like to know which library is installed for each version of R. Can you write a command to help them out?
+
+Following is the command I used to determine the libraries installed for the various R version in our institutional HPC cluster:
+
+ls -ltrh /home/sdi0596/R/x86_64-pc-linux-gnu-library/*
+
+
+Following is a sample output for two different version of R:
+
+/home/sdi0596/R/x86_64-pc-linux-gnu-library/4.0:
+total 54K
+drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:06 bitops
+drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:07 caTools
+drwxrwxr-x  8 sdi0596 sdi0596 4.0K Jul 31 12:10 utf8
+
+/home/sdi0596/R/x86_64-pc-linux-gnu-library/3.2:
+total 5.5K
+drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm10
+drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
+
+
 2. A common problem with shared filesystems is a disk quota overflow. This can be due to 1) a large combined size on disk or 2) too many files present on disk. We would like to help users who encounter this problem to locate the problematic files/directories. Write a command to sort all subdirectories of level `n` (`n` determined by the user) by their human-readable size. Write another command to sort all subdirectories of level `n` according to the number of files they contain.
 3. A user wants to install an `R` package and gets the following [error log](data/error.log). What is likely to cause the error and how can they solve it?
 4. A user is running commands like this one `cat file1 <(cut -d " " -f 1-15,17,18 file2) > file3`. What does this command do? It runs fine on the command line, but then the user includes it into a file with other commands, saves it and runs `chmod +x` on it. However, that line of code throws the following error : `syntax error near unexpected token '('`. What has the user forgotten?
