@@ -87,11 +87,11 @@ cat farm-snapshot.txt | awk '{print $2}' | sort | uniq -c | sort -k1,1nr
 
 Based on the output above, the top 5 users are:
 
-7146	km18
-3475	ro4
-2321	igs
-1655	nw17
-1521	pathpip
+             7146	km18
+             3475	ro4
+             2321	igs
+             1655	nw17
+             1521	pathpip
 
 
 
