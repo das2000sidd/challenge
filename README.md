@@ -64,6 +64,8 @@ The library call is a R language specific syntax. It is being attempted to run a
 
 To avoid this error, it needs to run using the “Rscript” command
 
+Eg: Rscript ./test.EasyQC-START.R
+
      
 
 7. Bioinformaticians often work on a computing cluster. The cluster runs a software called a job scheduler that attributes resources to users depending on the requirements of their jobs. In this case, let's imagine the cluster is running IBM LSF. You do not need to know it to answer this question. The `bjobs` command lists all jobs submitted by the user (manpage [here](https://www.ibm.com/support/knowledgecenter/en/SSETD4_9.1.2/lsf_command_ref/bjobs.1.html)). It gives this kind of output:
