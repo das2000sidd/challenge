@@ -34,7 +34,6 @@ drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm10
 drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
 
 
-2. A common problem with shared filesystems is a disk quota overflow. This can be due to 1) a large combined size on disk or 2) too many files present on disk. We would like to help users who encounter this problem to locate the problematic files/directories. Write a command to sort all subdirectories of level `n` (`n` determined by the user) by their human-readable size. Write another command to sort all subdirectories of level `n` according to the number of files they contain.
 3. A user wants to install an `R` package and gets the following [error log](data/error.log). What is likely to cause the error and how can they solve it?
 
 The most important error message in that error log is :
@@ -66,10 +65,7 @@ The library call is a R language specific syntax. It is being attempted to run a
 To avoid this error, it needs to run using the “Rscript” command
 
      
-     
-6. Programmatic download
-    - You have to download all autosomal files from this location: [http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/) onto **your server**. You connect to the server via SSH. Using only the command line, how do you perform this download?
-    - You are at a conference abroad and you quickly realise that your connection is unstable. You get disconnected constantly, which interrupts the download. How do you ensure the download survives these disconnections?
+
 7. Bioinformaticians often work on a computing cluster. The cluster runs a software called a job scheduler that attributes resources to users depending on the requirements of their jobs. In this case, let's imagine the cluster is running IBM LSF. You do not need to know it to answer this question. The `bjobs` command lists all jobs submitted by the user (manpage [here](https://www.ibm.com/support/knowledgecenter/en/SSETD4_9.1.2/lsf_command_ref/bjobs.1.html)). It gives this kind of output:
     ```
     JOBID   USER             STAT  QUEUE      FROM_HOST EXEC_HOST JOB_NAME SUBMIT_TIME
@@ -115,24 +111,13 @@ grep "RUN" farm-snapshot.txt | wc -l
 The number of running jobs was 5580.
 
 
-     
-     
-     
-     
-     
-     
-     
-     
-8. An analysis you need to run on the cluster requires a particular python library, but you do not have administrator rights. IT is on holiday. What do you do?
 9. All major computational tasks in your lab are done via SSH connection to mainframe servers or HPC clusters. A user comes from a Linux (mostly command-line) background but IT only support Windows 10 for laptops. How would you advise them to configure their laptop to make their transition easier?
 
 
 A suitable advice would be to download and install a SSH client for windows such as PuTTY or WinSCP. If configured correctly, they should be able to SSH into the HPC clusters with their institutional login id and password.
 
 ### Bioinformatics
-1. The [VCF format](http://www.internationalgenome.org/wiki/Analysis/vcf4.0/) is a popular format to describe genetic variations in a study group. It is often used in sequencing projects. Due to size concerns, it is often compressed using `gzip` and indexed using `tabix`. A binary version, BCF, also exists.
-    - Write a command or script to remove duplicate positions in a VCF such as [this one](data/duplicates.vcf.gz), independently of their alleles. The positions can be duplicated an arbitrary number of times. Write code to keep the first, last and a random record among each set of duplicated records.
-    - Same question, but make duplicate detection allele-specific. When it finds such an exact duplicate, your code should remove all of the corresponding records.
+
 2. From an existing VCF with an arbitrary number of samples, how do you produce a VCF file without any samples using `bcftools`?
 
 The logic here was first generate the unique list of samples for a vcf file using bcftools query and then remove them using bcftools view with -S flag by appending a “^” before the sample names.
@@ -146,7 +131,7 @@ bcftools view -S samples_to_remove_with_symbol.txt query_file.vcf > query_file_n
 
 Here it is assumed query_file.vcf is a multi-sample VCF with at least two samples.
 
-3. You are the curator of a genotype dataset with a very strict privacy policy in place. In particular, it should be impossible to tell, given access to a person's genetic data, whether they were part of your study by looking at a dataset you provided. A collaborator is asking you for some data to run tests on their code. What information can you safely contribute from your study?
+
 4. How do you convert a gzipped VCF to the `bimbam` format? (you may choose to script a solution yourself, or not)
 
 A gzipped VCF can be converted to a bimbam file using the following code. This was run using Plink 1.9. A sample format would be as shown below:
@@ -154,12 +139,6 @@ A gzipped VCF can be converted to a bimbam file using the following code. This w
 plink –vcf vcf_file –snps-only –recode-bimbam –out vcf_bimbam
 
 
-5. A user sends you a small number of chromosome and positions in build 38 that they want to know the rsID of. 
-    - What is missing from their request? What kind of unexpected output can they expect?
-    - Given [this file](data/rand.chrpos.txt), honour their request using the Ensembl REST API.
-    - Do the same, but offline, using the dbSNP r.150 VCF file.
-    - What would change if these positions were in build 37?
-    - If the user sends you 7,000 such chromosome positions, how would the above methods perform? Do you know of any alternatives?
 6. How would you change the chromosome numbers in the file above to chromosome names (e.g. "chr1" instead of "1")?
     - How would you change the names back to the original? Would your solution work if an additional column containing text of arbitrary length and content is appended at the left of the file?
     - These positions are extracted from a VCF. Convert this file to the BED format.
@@ -173,7 +152,6 @@ To remove chr word and return back to original, following can be done:
 sed 's/chr//g' rand.chrpos.with.chr.word.txt > no.chr.word.txt
 
  To convert VCF file to bed file, following is the command:
-
 
 gunzip -c duplicates.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";print $1,$2,$2+length($5)-length($1),$4,$5}' > duplicates.bed
 
@@ -236,13 +214,6 @@ The command is unzipping the file and  piping the column 2 from this file into t
 There was a total of 20 chromosomes. Since this is from HRC which is human data, we can say that chromosome X and Y are missing.
 
 
-
-11.  Find out the coordinates of the _ADIPOQ_ gene. Your method should be generalisable to a list of genes and take a few seconds to run (take inspiration from question 5). Then, please report the following:
-    - the coordinates of the exons of its canonical transcript.
-    - all documented variants in this gene.
-    - all phenotype-associated variants. 
-    - all documented loss-of-function (LoF) variants in this gene. How did you define LoF?
-    - If asked to find all regulatory variants that potentially affect this gene, which questions would you ask and how would you proceed?
 12. How would you convert a VCF file to the Plink binary format? How would you do the reverse, and what kind of problems do you anticipate?
 
 Following is a sample code to convert vcf file to Plink binary format using a combination of vcftools and plink.
@@ -302,13 +273,14 @@ chr10	10629861	C	CAA	2616	19
 
 
 
-
-15. [This file](https://github.com/hmgu-itg/challenge/raw/master/data/mock.eQTL.forChallenge.txt) contains eQTL overlap data for SNPs that arise as signals in GWAS for several phenotypes. Reformat this file to have one line per SNP/phenotype pair, and two additional columns formatted as such : `GENE1(tissue1, tissue2),GENE2(tissue1, tissue3)`, and `GENE1(2),GENE2(2)`. Each line should contain the SNP/phenotype pair, all genes found overlapping and their respective tissues, and all genes found overlapping with the number of tissues.
 16. A researcher wants to conduct a disease association study. However, colleagues warn him that the dataset contains related individuals. He would like to remove relatedness in his dataset, but given his disease is rare, he would also like to maximise the number of cases kept in. Using [a list of samples with disease status](https://github.com/hmgu-itg/challenge/raw/master/data/relateds.pheno.tsv) and [a file containing pairs of individuals above a relatedness threshold](https://github.com/hmgu-itg/challenge/raw/master/data/relateds.tsv), create an exclusion list of samples to remove to help the researcher achieve their goal.
 
+
+
+
+
 ### Statistical genetics
-1. You sample at random 10,000 variants from a deep (50x) whole-genome sequencing variant call file describing 1,000 individuals. What do you expect the distribution of minor allele frequency to look like? In particular, which minor allele counts are likely to be most frequent?
-2. You are running a single-point association study with a quantitative phenotype on the dataset above. Which filters, if any, would you apply to the dataset? 
+
 3. A common practice when performing genetic association studies is to perform an ethnicity check as a quality control step. Can you explain how this is done?
     - You are dealing with whole-genome sequencing data in 2,326 Bulgarian samples. How would you perform such an ethnicity check, and which projection dataset would you use? 
     
@@ -330,8 +302,6 @@ If it is not in a coding sequence, then I would see if it is in other important 
 
 
 
-
-5. You are running an inverse-variance based single-point meta-analysis of the above dataset together with a UK study of 12,400 individuals. The variant above is found in the UK dataset, but its association is weak (1e-3). However, another variant located 1kb downstream is strongly associated with the same trait (p=1e-15) but weakly associated in your study (p=5e-4). Which of these 2 variants do you expect will have the strongest meta-analysis p-value? What do you think is happening in this region, how can you test it, and which model could you apply if it is the case?
 6. An analyst studies a population of remote villages in Eastern Europe. They are interested in a particular variant, and compare the frequency in their villages (3.5%) to the EUR population frequency in the 1000 Genomes (0.03%). They conclude that the variant has increased in frequency in their villages. Do you agree, and if not, what would your advice be?
 
 The first step in this study would be to do a principal component analysis of the 1000 genomes EUR data and the samples from the remote villages in Europe to see if the remote villages cluster with the EUR population. If they do not, then the right population group from the thousand genomes need to be investigated to see which is the population group these isolated villages are close to the most.
@@ -342,6 +312,21 @@ My assumption would be these samples would not cluster well with most of the tho
     - Which checks would you perform on such a dataset?
     - You wish to include this dataset in a meta-analysis. Which additional information should you ask for in your next email to your colleague?
     - In this dataset, you observe  &#955;=1.25. The analyst has adjusted for age, age-squared, sex, and fasting status. What would you suggest they do?
+    Following are the checks than can be performed:
+
+Following are the checks to perform:
+
+1.	The p values for the individual SNP have been adjusted for multiple testing correction or not
+2.	SNPs with MAF less than 0.05 have been removed or not
+3.	Individuals with genotyping type less than 95% for all the SNPs on the array have been excluded
+4.	The genomic inflation factor which should be around 1 suggesting the statistics reported for the SNPs will not be inflated.
+
+
+
+Based on that genomic inflation factor value, I would advice them to divide the chi square test statistic for each variant by that value which would make it less likely to observe extreme p values.
+
+
+    
 8. You are a co-author on a manuscript. You receive a draft, in which the main author has used the traditional &#945;=5e-8 as the significance threshold. The paper describes an analysis of 10 related blood phenotypes (platelet count, platelet volume, immature platelet fraction ...) using the fixed markers of the Infinium ImmunoArray on 897 individuals. What do you think about the chosen threshold, and what would you suggest to the first author? What would be your comments on the design of the study? 
 
 
