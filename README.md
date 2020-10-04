@@ -221,10 +221,10 @@ From the above command, three files were generated named 0000.vcf, 0001.vcf and 
 
 Following are the p values corresponding to the standard normal distributions:
 
-2*pnorm(-abs(10.35))= 4.184858e-25
-2*pnorm(-abs(29.7))= 7.678615e-194
-2*pnorm(-abs(45.688)) = 0
-2*pnorm(-abs(78.1479)) = 0
+      2*pnorm(-abs(10.35))= 4.184858e-25
+      2*pnorm(-abs(29.7))= 7.678615e-194
+      2*pnorm(-abs(45.688)) = 0
+     2*pnorm(-abs(78.1479)) = 0
 
 Here it is assumed that a 2 sided p value has been desired. If not, then the multiplication by 2 has to be removed.
 
