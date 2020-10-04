@@ -1,0 +1,1 @@
+gunzip -c hrc.positions.txt.bgz.gz | cut -f2 | sort | uniq | wc -l
