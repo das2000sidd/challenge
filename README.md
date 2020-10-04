@@ -324,6 +324,9 @@ Eg: for position 10629861 on chr10, the association file has the following posit
 16. A researcher wants to conduct a disease association study. However, colleagues warn him that the dataset contains related individuals. He would like to remove relatedness in his dataset, but given his disease is rare, he would also like to maximise the number of cases kept in. Using [a list of samples with disease status](https://github.com/hmgu-itg/challenge/raw/master/data/relateds.pheno.tsv) and [a file containing pairs of individuals above a relatedness threshold](https://github.com/hmgu-itg/challenge/raw/master/data/relateds.tsv), create an exclusion list of samples to remove to help the researcher achieve their goal.
 
 
+Since the dataset had only 93 cases and 907 controls, the cases were not removed. The controls were targeted for removal. In order to do so, first the related pairs where both the individuals were a control were pulled out. Since anyone of the relatedness samples are to be removed, unique samples of column “IID2” of related samples tables were one of the chosen list of the samples for removal. Now among the samples in column “IID1”, there were also 84 unique samples that had a relatedness to another sample in IID1.  Thus a total of the unique samples of the 84 and the 302 for IID2 were finally chosen for removal. Combining these two into a vector and pulling out only the unique ones, there were a total of 303 control samples that should be removed.
+
+The Rcode used is in the file “find_samples_to_exclude_Bioinformatics_Que16.R”.
 
 
 
