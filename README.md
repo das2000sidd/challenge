@@ -141,6 +141,37 @@ A suitable advice would be to download and install a SSH client for windows such
 
 ### Bioinformatics
 
+
+1. The VCF format is a popular format to describe genetic variations in a study group. It is often used in sequencing projects. Due to size concerns, it is often compressed using gzip and indexed using tabix. A binary version, BCF, also exists.
+Write a command or script to remove duplicate positions in a VCF such as this one, independently of their alleles. The positions can be duplicated an arbitrary number of times. Write code to keep the first, last and a random record among each set of duplicated records.
+Same question, but make duplicate detection allele-specific. When it finds such an exact duplicate, your code should remove all of the corresponding records.
+
+
+To only remove duplicate positions:
+
+To find all the duplicated positions, the logic was to first pull out the duplicated chromosome and position pair and then use vcftools with –exclude-positions flag to remove them. Following is the code for that where uniq with -d flag finds the duplicated chromosome and the start line:
+
+gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2 |  sort -k1,1 -k2,2n | uniq -d > duplicated_loci.txt
+
+vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci.txt --recode --out unique_variants
+
+To remove duplicates positions with duplication of alleles:
+
+Assuming duplicate allele would be the ones with same position and same reference and alternate allele, following would be the code:
+
+gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4,5 | sort -k1,1n -k2,2n -k3,3 -k4,4 | uniq -d > duplicated_loci_both_allele.txt
+
+vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ both _allele.txt --recode --out unique_no_duplicate_loci
+
+However in the provided VCF, no such variants were available that had this condition above but there were entries with the same loci and reference allele. Following would be the code to pull  them out and remove them.
+
+gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4 | sort | uniq -d > duplicated_loci_ref_allele.txt
+
+cut -f1-2 duplicated_loci_ref_allele.txt > duplicated_loci_ref_allele_to_remove.txt
+
+vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ref_allele_to_remove.txt --recode --out unique_no_duplicate_loci_and_allele
+
+
 2. From an existing VCF with an arbitrary number of samples, how do you produce a VCF file without any samples using `bcftools`?
 
 The logic here was first generate the unique list of samples for a vcf file using bcftools query and then remove them using bcftools view with -S flag by appending a “^” before the sample names.
