@@ -36,7 +36,22 @@ drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
 
 2. A common problem with shared filesystems is a disk quota overflow. This can be due to 1) a large combined size on disk or 2) too many files present on disk. We would like to help users who encounter this problem to locate the problematic files/directories. Write a command to sort all subdirectories of level `n` (`n` determined by the user) by their human-readable size. Write another command to sort all subdirectories of level `n` according to the number of files they contain.
 3. A user wants to install an `R` package and gets the following [error log](data/error.log). What is likely to cause the error and how can they solve it?
+
+The most important error message in that error log is :
+
+unrecognised command line option ‘-std=c++11’
+
+This prevents compilation of the subsequent packages being installed and is due to an old gcc compiler being used which is not compatible with the version of compiler required for the tools being used. 
+A possible resolution would to update to the latest version of the gcc compiler.
+
 4. A user is running commands like this one `cat file1 <(cut -d " " -f 1-15,17,18 file2) > file3`. What does this command do? It runs fine on the command line, but then the user includes it into a file with other commands, saves it and runs `chmod +x` on it. However, that line of code throws the following error : `syntax error near unexpected token '('`. What has the user forgotten?
+
+This command appends file2 to the end of file1.
+
+The user gets the error because he has forgotten to escape the brackets with a backslash.
+
+
+
 5. A collaborator has sent you [this script](data/EasyQCWrapper.sh). It is a wrapper for a bioinformatics software called `EasyQC`.  Running it, you get the following error: 
 
     ```bash
@@ -45,6 +60,13 @@ drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
     ```
 
      You need to run this script now, but your collaborator is unavailable for a few days. What is causing the error? (Hint: Nothing is wrong with the `.ecf` EasyQC script.)
+     
+The library call is a R language specific syntax. It is being attempted to run as bash script and hence this R error is being thrown. 
+
+To avoid this error, it needs to run using the “Rscript” command
+
+     
+     
 6. Programmatic download
     - You have to download all autosomal files from this location: [http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/](http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/) onto **your server**. You connect to the server via SSH. Using only the command line, how do you perform this download?
     - You are at a conference abroad and you quickly realise that your connection is unstable. You get disconnected constantly, which interrupts the download. How do you ensure the download survives these disconnections?
@@ -60,6 +82,47 @@ drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
      - Given the [following output](data/farm-snapshot.txt) of `bjobs -all`, which users are the top 5 users of the cluster?
      - How many jobs does the user `pathpip` have running in all queues?
      - A user wants to know how many jobs they have pending (`PEND`) and running (`RUN`) in each queue. Write a command line to do that (You can use the log above to check your command line). How would they display this on their screen permanently, in real time?
+     
+     Using the following command, a list of number of jobs per used was determined in descending order:
+cat farm-snapshot.txt | awk '{print $2}' | sort | uniq -c | sort -k1,1nr
+
+
+Based on the output above, the top 5 users are:
+
+7146	km18
+3475	ro4
+2321	igs
+1655	nw17
+1521	pathpip
+
+
+
+The user papthpip has a total of 1521 jobs running. Following is the command used to determine that value:
+
+cat farm-snapshot.txt | grep "pathpip" | wc -l
+
+To get the number of pending jobs, following is the command:
+
+grep "PEND" farm-snapshot.txt | wc -l
+
+The number of pending jobs was 13336.
+
+
+To get the number of running jobs, following is the command:
+
+grep "RUN" farm-snapshot.txt | wc -l
+
+The number of running jobs was 5580.
+
+
+     
+     
+     
+     
+     
+     
+     
+     
 8. An analysis you need to run on the cluster requires a particular python library, but you do not have administrator rights. IT is on holiday. What do you do?
 9. All major computational tasks in your lab are done via SSH connection to mainframe servers or HPC clusters. A user comes from a Linux (mostly command-line) background but IT only support Windows 10 for laptops. How would you advise them to configure their laptop to make their transition easier?
 
