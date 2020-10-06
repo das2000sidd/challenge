@@ -217,25 +217,25 @@ and deletions separately.
 To pull out the SNPs, a comparison is made of the length of the reference and alternate allele
 which will only be 1 for SNPs, following is the code:
 
-gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)==length($5))
-print $1,$2,$2,$4,$5};' > snps.bed
+        gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)==length($5))
+        print $1,$2,$2,$4,$5};' > snps.bed
 
 To pull out the insertions where the length of reference allele will be smaller than alternate
 allele, following is the code:
 
-gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4) < length($5))
-print $1,$2,$2+(length($5)-length($4)),$4,$5};' > insertions.bed
+        gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4) < length($5))
+        print $1,$2,$2+(length($5)-length($4)),$4,$5};' > insertions.bed
 
 To pull out the deletions where the length of the reference will be greater than the alternate
 allele, following is the code:
 
-gunzip -c duplicates.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)>length($5))
-print $1,$2,$2+(length($4)-length($5)),$4,$5};' > deletions.bed
+         gunzip -c duplicates.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)>length($5))
+         print $1,$2,$2+(length($4)-length($5)),$4,$5};' > deletions.bed
 
 These three files than can be combined together and sorted by chromosome, start and stop for
 the final bed file with following commands:
 
-cat snps.bed insertions.bed deletions.bed | sort -k1,1n -k2,2n > vcf_as_bed_sorted.bed
+        cat snps.bed insertions.bed deletions.bed | sort -k1,1n -k2,2n > vcf_as_bed_sorted.bed
    
 
 
@@ -252,15 +252,15 @@ cat snps.bed insertions.bed deletions.bed | sort -k1,1n -k2,2n > vcf_as_bed_sort
 There are multiple ways to find the differences using vcftools, bcftools as well as bedtools.
 For vcftools, following is a sample command:
 
-vcftools --gzvcf  ALL.chr21_GRCh38_sites.20170504.vcf.gz –gzdiff ALL.chr21_GRCh38_sites.20170504.vcf.gz --diff-site --out SItes_not_matching_chr21
+         vcftools --gzvcf  ALL.chr21_GRCh38_sites.20170504.vcf.gz –gzdiff ALL.chr21_GRCh38_sites.20170504.vcf.gz --diff-site --out SItes_not_matching_chr21
 
 If there is a difference in the files, then the common unique sites of each file will be written SItes_not_matching_chr21.recocde,.vcf
 
 For bcftools, following is a sample set of commands:
 
-bcftools index -f / Chr21_not_local/ALL.chr21_GRCh38_sites.20170504.vcf.gz 
-bcftools index -f / Chr21_local/ ALL.chr21_GRCh38_sites.20170504.vcf.gz
-bcftools isec / Chr21_local/ ALL.chr21_GRCh38_sites.20170504.vcf.gz / Chr21_not_local/ALL.chr21_GRCh38_sites.20170504.vcf.gz -p Ch21_bcftools_check
+        bcftools index -f / Chr21_not_local/ALL.chr21_GRCh38_sites.20170504.vcf.gz 
+        bcftools index -f / Chr21_local/ ALL.chr21_GRCh38_sites.20170504.vcf.gz
+        bcftools isec / Chr21_local/ ALL.chr21_GRCh38_sites.20170504.vcf.gz / Chr21_not_local/ALL.chr21_GRCh38_sites.20170504.vcf.gz -p Ch21_bcftools_check
 
 From the above command, three files were generated named 0000.vcf, 0001.vcf and 0002.vcf. The unique variants go to 0000.vcf and 0001.vcf while the common variants go to 0002.vcf. In this case all the variants went to 0002.vcf suggesting there wasn’t a difference in the VCF files.
 
@@ -286,9 +286,13 @@ Here it is assumed that a 2 sided p value has been desired. If not, then the mul
 
 9.	We want to round a column of numbers to `n` decimal places, with values with 5 as their rightmost significant digit rounded up. Use the language of your choice.
 
-Assuming the language is R and a vector of values called ‘numbers’ is available, following is the command:
-
-round(numbers,digits = 5)
+            rounding_off = function(num_vector,decimal_places){
+            round(num_vector,decimal_places)
+            }
+          test_vector=c(32.774849349,65.838387373,78.47475646,78.8575587979)
+          rounding_off(test_vector,5)
+          [1] 32.77485 65.83839 78.47476 78.85756
+Here the 5 highlighted in red within 78.8575587979 is rounded off to 6.
 
 
 
