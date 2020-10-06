@@ -17,24 +17,24 @@ To submit your results, please clone this repository and make your edits. Once y
 
 Following is the command I used to determine the libraries installed for the various R version in our institutional HPC cluster:
 
-ls -ltrh /home/sdi0596/R/x86_64-pc-linux-gnu-library/*
+        ls -ltrh /home/sdi0596/R/x86_64-pc-linux-gnu-library/*
 
 
 Following is a sample output for two different version of R:
 
-/home/sdi0596/R/x86_64-pc-linux-gnu-library/4.0:
-total 54K
-drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:06 bitops
+           /home/sdi0596/R/x86_64-pc-linux-gnu-library/4.0:
+          total 54K
+         drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:06 bitops
 
-drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:07 caTools
+         drwxrwxr-x  7 sdi0596 sdi0596 4.0K Jul 31 12:07 caTools
 
-drwxrwxr-x  8 sdi0596 sdi0596 4.0K Jul 31 12:10 utf8
+         drwxrwxr-x  8 sdi0596 sdi0596 4.0K Jul 31 12:10 utf8
 
-/home/sdi0596/R/x86_64-pc-linux-gnu-library/3.2:
-total 5.5K
-drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm10
+        /home/sdi0596/R/x86_64-pc-linux-gnu-library/3.2:
+       total 5.5K
+       drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm10
 
-drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
+       drwxrwxr-x  7 sdi0596 sdi0596 4.0K Dec 12  2018 BSgenome.Mmusculus.UCSC.mm9
 
 
 
@@ -111,18 +111,18 @@ Based on the output above, the top 5 users are:
 
 The user papthpip has a total of 1521 jobs running. Following is the command used to determine that value:
 
-cat farm-snapshot.txt | grep "pathpip" | wc -l
+        cat farm-snapshot.txt | grep "pathpip" | wc -l
 
 To get the number of pending jobs, following is the command:
 
-grep "PEND" farm-snapshot.txt | wc -l
+        grep "PEND" farm-snapshot.txt | wc -l
 
 The number of pending jobs was 13336.
 
 
 To get the number of running jobs, following is the command:
 
-grep "RUN" farm-snapshot.txt | wc -l
+        grep "RUN" farm-snapshot.txt | wc -l
 
 The number of running jobs was 5580.
 
@@ -151,36 +151,36 @@ To only remove duplicate positions:
 
 To find all the duplicated positions, the logic was to first pull out the duplicated chromosome and position pair and then use vcftools with –exclude-positions flag to remove them. Following is the code for that where uniq with -d flag finds the duplicated chromosome and the start line:
 
-gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2 |  sort -k1,1 -k2,2n | uniq -d > duplicated_loci.txt
+           gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2 |  sort -k1,1 -k2,2n | uniq -d > duplicated_loci.txt
 
-vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci.txt --recode --out unique_variants
+            vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci.txt --recode --out unique_variants
 
 To remove duplicates positions with duplication of alleles:
 
 Assuming duplicate allele would be the ones with same position and same reference and alternate allele, following would be the code:
 
-gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4,5 | sort -k1,1n -k2,2n -k3,3 -k4,4 | uniq -d > duplicated_loci_both_allele.txt
+         gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4,5 | sort -k1,1n -k2,2n -k3,3 -k4,4 | uniq -d > duplicated_loci_both_allele.txt
 
-vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ both _allele.txt --recode --out unique_no_duplicate_loci
+        vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ both _allele.txt --recode --out unique_no_duplicate_loci
 
 However in the provided VCF, no such variants were available that had this condition above but there were entries with the same loci and reference allele. Following would be the code to pull  them out and remove them.
 
-gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4 | sort | uniq -d > duplicated_loci_ref_allele.txt
+        gunzip -c duplicates.vcf.gz | grep -v "#" | cut -f1,2,4 | sort | uniq -d > duplicated_loci_ref_allele.txt
 
-cut -f1-2 duplicated_loci_ref_allele.txt > duplicated_loci_ref_allele_to_remove.txt
+        cut -f1-2 duplicated_loci_ref_allele.txt > duplicated_loci_ref_allele_to_remove.txt
 
-vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ref_allele_to_remove.txt --recode --out unique_no_duplicate_loci_and_allele
+        vcftools --gzvcf duplicates.vcf.gz --exclude-positions duplicated_loci_ref_allele_to_remove.txt --recode --out unique_no_duplicate_loci_and_allele
 
 
 2. From an existing VCF with an arbitrary number of samples, how do you produce a VCF file without any samples using `bcftools`?
 
 The logic here was first generate the unique list of samples for a vcf file using bcftools query and then remove them using bcftools view with -S flag by appending a “^” before the sample names.
 
-bcftools query -l query_file.vcf > samples_to_remove.txt
+           bcftools query -l query_file.vcf > samples_to_remove.txt
 
-awk '{print "^"$0}' samples_to_remove.txt > samples_to_remove_with_symbol.txt
+          awk '{print "^"$0}' samples_to_remove.txt > samples_to_remove_with_symbol.txt
 
-bcftools view -S samples_to_remove_with_symbol.txt query_file.vcf > query_file_no_samples.vcf
+          bcftools view -S samples_to_remove_with_symbol.txt query_file.vcf > query_file_no_samples.vcf
 
 
 Here it is assumed query_file.vcf is a VCF with at least one sample's genotype information.
@@ -193,7 +193,7 @@ Here it is assumed query_file.vcf is a VCF with at least one sample's genotype i
 
 A gzipped VCF can be converted to a bimbam file using the following code. This was run using Plink 1.9. A sample format would be as shown below:
 
-plink –vcf vcf_file –snps-only –recode-bimbam –out vcf_bimbam
+           plink –vcf vcf_file –snps-only –recode-bimbam –out vcf_bimbam
 
 
 
@@ -205,11 +205,11 @@ plink –vcf vcf_file –snps-only –recode-bimbam –out vcf_bimbam
     
 Following is the command use to add “chr” in front of pre existing chromosome name:
  
-awk 'OFS="\t" {$1="chr"$1; print}' rand.chrpos.txt > rand.chrpos.with.chr.word.txt
+           awk 'OFS="\t" {$1="chr"$1; print}' rand.chrpos.txt > rand.chrpos.with.chr.word.txt
 
 To remove chr word and return back to original, following can be done:
 
-sed 's/chr//g' rand.chrpos.with.chr.word.txt > no.chr.word.txt
+          sed 's/chr//g' rand.chrpos.with.chr.word.txt > no.chr.word.txt
 
  To convert VCF file to bed file, the start and stop will need to be adjusted for SNPs, insertions
 and deletions separately.
@@ -302,7 +302,7 @@ Here the 5 highlighted in red within 78.8575587979 is rounded off to 6.
 
 Following was the command using to determine total number of unique chromosomes:
 
-gunzip -c hrc.positions.txt.bgz.gz | cut -f2 | sort | uniq | wc -l
+        gunzip -c hrc.positions.txt.bgz.gz | cut -f2 | sort | uniq | wc -l
 
 The command is unzipping the file and  piping the column 2 from this file into the sort command and subsequently the unique command is pulling out the unique chromosome ids.
 There was a total of 20 chromosomes. Since this is from HRC which is human data, we can say that chromosome X and Y are missing.
@@ -315,13 +315,13 @@ There was a total of 20 chromosomes. Since this is from HRC which is human data,
 
 Following is a sample code to convert vcf file to Plink binary format using a combination of vcftools and plink.
 
-vcftools --gzvcf duplicates.vcf.gz --plink-tped --out duplicates_plink
-plink --tfile duplicates_plink --make-bed --out duplicates_plink_binary
+           vcftools --gzvcf duplicates.vcf.gz --plink-tped --out duplicates_plink
+           plink --tfile duplicates_plink --make-bed --out duplicates_plink_binary
 
 
 To convert plink binary file to vcf file, following would be a sample command:
 
-plink --bfile bfile_generated --recode vcf --out vcf_from_bfile
+          plink --bfile bfile_generated --recode vcf --out vcf_from_bfile
 
 One of the problems in the above command is that Plink version 1.9 may truncate indels that are too long and hence the number of variants in the Plink format map files and ped files may not match with that of VCF file.
 
