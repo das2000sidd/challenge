@@ -211,11 +211,31 @@ To remove chr word and return back to original, following can be done:
 
 sed 's/chr//g' rand.chrpos.with.chr.word.txt > no.chr.word.txt
 
- To convert VCF file to bed file, following is the command:
+ To convert VCF file to bed file, the start and stop will need to be adjusted for SNPs, insertions
+and deletions separately.
 
-gunzip -c duplicates.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";print $1,$2,$2+length($5)-length($1),$4,$5}' > duplicates.bed
+To pull out the SNPs, a comparison is made of the length of the reference and alternate allele
+which will only be 1 for SNPs, following is the code:
 
-In the code above $2+length($5)-length($1) is to determine the length of deletion in case there is one. 
+gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)==length($5))
+print $1,$2,$2,$4,$5};' > snps.bed
+
+To pull out the insertions where the length of reference allele will be smaller than alternate
+allele, following is the code:
+
+gunzip -c compressed.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4) < length($5))
+print $1,$2,$2+(length($5)-length($4)),$4,$5};' > insertions.bed
+
+To pull out the deletions where the length of the reference will be greater than the alternate
+allele, following is the code:
+
+gunzip -c duplicates.vcf.gz | grep -v "#" | awk '{FS="\t";OFS="\t";if(length($4)>length($5))
+print $1,$2,$2+(length($4)-length($5)),$4,$5};' > deletions.bed
+
+These three files than can be combined together and sorted by chromosome, start and stop for
+the final bed file with following commands:
+
+cat snps.bed insertions.bed deletions.bed | sort -k1,1n -k2,2n > vcf_as_bed_sorted.bed
    
 
 
